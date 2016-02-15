@@ -1,8 +1,5 @@
 <?php
 /**
- * $Id$
- * $Revision$
- * $Date$
  * @package Hacklog Remote Image Autosave
  * @encoding UTF-8
  * @author 荒野无灯 <HuangYeWuDeng>
@@ -10,8 +7,8 @@
  * @copyright Copyright (C) 2012 荒野无灯
  * @license http://www.gnu.org/licenses/
  */
-require dirname ( __FILE__ ) . '/header.php';
 
+require __DIR__ . '/header.php';
 @header ( 'Content-Type: ' . get_option ( 'html_type' ) . '; charset=' . get_option ( 'blog_charset' ) );
 
 $GLOBALS ['body_id'] = 'media-upload';

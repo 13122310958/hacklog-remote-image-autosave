@@ -1,8 +1,5 @@
 <?php
 /**
- * $Id$
- * $Revision$
- * $Date$
  * @package Hacklog Remote Image Autosave
  * @encoding UTF-8
  * @author 荒野无灯 <HuangYeWuDeng>
@@ -15,7 +12,7 @@ defined('ABSPATH') || die('No direct access!');
 
 class hacklog_remote_image_autosave 
 {
-	const VERSION = 'Hacklog Remote Image Autosave 2.0.7';
+	const VERSION = 'Hacklog Remote Image Autosave 2.0.9';
 	const textdomain = 'hacklog_remote_image_autosave';
 	const opt = 'hacklog_ria_auto_down';
 	private static $plugin_name = 'Hacklog Remote Image Autosave';
@@ -57,7 +54,7 @@ class hacklog_remote_image_autosave
 
 	public static function get_conf($key,$default='')
 	{
-		return isset(self::$opts[$key]) ? self::$opts[$key] : $default;
+		return array_key_exists($key, self::$opts) ? self::$opts[$key] : $default;
 	}
 
 	public static function set_conf($key,$value='')
@@ -85,12 +82,13 @@ class hacklog_remote_image_autosave
 		$alt = __('Download remote images to local server', self::textdomain);
 		$img = '<img src="' . esc_url($admin_icon) . '" width="15" height="15" alt="' . esc_attr($alt) . '" />';
 
-		echo '<a href="' . esc_url($url) . '" class="thickbox hacklog-ria-button" id="' . esc_attr($editor_id) . '-hacklog_ria" title="' . esc_attr__('Hacklog Remote Image Autosave', self::textdomain) . '" onclick="return false;">' . $img . '</a>';
+		echo '<a href="' . esc_url($url) . '" class="thickbox hacklog-ria-button" id="' . esc_attr($editor_id) . '-hacklog_ria" title="' .
+			esc_attr__('Hacklog Remote Image Autosave', self::textdomain) . '" onclick="return false;">' . $img . '</a>';
 	}
 
 	
 	//add option menu to Settings menu
-	function add_setting_menu() 
+	public static function add_setting_menu()
 	{
 		add_options_page( self::$plugin_name. ' Options', 'Hacklog RIA', 'manage_options', md5(HACKLOG_RIA_LOADER), array(__CLASS__,'option_page') );
 	}
@@ -98,7 +96,7 @@ class hacklog_remote_image_autosave
 	//option page
 	public static function option_page() 
 	{
-		if(isset($_POST['submit']))
+		if(array_key_exists('submit', $_POST))
 		{
 			$min_width = (int) trim($_POST['min_width']);
 			self::set_conf('min_width',$min_width);
@@ -110,13 +108,12 @@ class hacklog_remote_image_autosave
 		}
 		?>
 	<div class="wrap">
-	<?php screen_icon(); ?>
 	<h2><?php _e(self::$plugin_name) ?> Options</h2>
 	<form method="post">
 	<table width="100%" cellpadding="5" class="form-table">
 	<tr valign="top">
 		<th scope="row">	
-	thumbnail size：
+			thumbnail size：
 		</th>
 		<td>
 			<select name="thumbnail_size" style="width:120px;">
@@ -129,7 +126,7 @@ class hacklog_remote_image_autosave
 	</tr>
 	<tr valign="top">
 		<th scope="row">	
-	min width image to download：
+		min width image to download：
 		</th>
 		<td>
 			<input type="text" name="min_width" value="<?php echo self::get_conf('min_width');?>"/>

@@ -1,8 +1,5 @@
 <?php
 /**
- * $Id$
- * $Revision$
- * $Date$
  * @package Hacklog Remote Image Autosave
  * @encoding UTF-8
  * @author 荒野无灯 <HuangYeWuDeng>
@@ -10,15 +7,17 @@
  * @copyright Copyright (C) 2012 荒野无灯
  * @license http://www.gnu.org/licenses/
  */
+
 @ini_set ( 'display_errors', 0 );
 ignore_user_abort ( true );
+
 require dirname ( __FILE__ ) . '/header.php';
 require dirname ( __FILE__ ) . '/util.class.php';
 // header('Allow: POST');
 ?>
 <?php
 
-$act = isset ( $_GET ['act'] ) ? $_GET ['act'] : '';
+$act = array_key_exists('act', $_GET) ? $_GET ['act'] : '';
 switch ($act) {
 	case 'do_download' :
 		do_download ();
@@ -56,6 +55,12 @@ function do_download() {
 }
 
 function do_get_images() {
+	if (!array_key_exists('content', $_POST)) {
+		echo json_encode ( array (
+			'status' => 'no_img'
+		) );
+		die();
+	}
 	// var_dump($_POST['content']);
 	$content = hacklog_ria_util::get_images ( stripslashes ( $_POST ['content'] ) );
 	$images = array ();
