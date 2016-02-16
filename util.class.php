@@ -1,8 +1,5 @@
 <?php
 /**
- * $Id$
- * $Revision$
- * $Date$
  * @package Hacklog Remote Image Autosave
  * @encoding UTF-8
  * @author 荒野无灯 <HuangYeWuDeng>
@@ -10,6 +7,7 @@
  * @copyright Copyright (C) 2012 荒野无灯
  * @license http://www.gnu.org/licenses/
  */
+
 class hacklog_ria_util {
 	
 	private static $mime_to_ext = array (
@@ -33,7 +31,8 @@ class hacklog_ria_util {
 	
 	/**
 	 * check if the url is a remote image resource.
-	 * @param unknown_type $url
+	 * @param string $url
+	 * @return bool
 	 */
 	static function is_remote_file($url) {
 		$upload_dir = wp_upload_dir();
@@ -165,7 +164,8 @@ class hacklog_ria_util {
 	
 	/**
 	 * return orig img when an error occurred
-	 * @param unknown_type $src        	
+	 * @param string $remote_image_url
+	 * @return array
 	 */
 	static function return_origin($remote_image_url) {
 		return array (
@@ -197,6 +197,9 @@ class hacklog_ria_util {
 		}
 
 		$e = error_get_last();
+		if (NULL === $e) {
+			return ;
+		}
 		switch ($e['type'])
 		{
 			case E_WARNING :
@@ -216,22 +219,22 @@ class hacklog_ria_util {
 		
 		if( $fatal )
 		{
-		$error_msg = $type . ': ' . strip_tags($e['message']) . ' at ' . $e['file'] . ' ' . $e['line'];
-		echo self::raise_error ( $error_msg );
-		error_log($error_msg,0);
-		die();
+			$error_msg = $type . ': ' . strip_tags($e['message']) . ' at ' . $e['file'] . ' ' . $e['line'];
+			echo self::raise_error ( $error_msg );
+			error_log($error_msg,0);
+			die();
 		}
 	}
 	
 	/**
-	 * NOTE: wp curl class default timeoute is 5s,must set it long to avoid the 
+	 * NOTE: wp curl class default timeout is 5s,must set it long to avoid the
 	 * "Operation timed out after 5008 milliseconds with 122371 out of 315645 bytes received"
 	 * error.
 	 * On windows server,if we want to fetch data from ssl remote server, 
 	 * extra things shoudl be do with php5 curl module,set ssl verify to FALSE can simply solve the problem.
 	 * but this is not the ideal solution!
-	 * @param unknown_type $post_id
-	 * @param unknown_type $url
+	 * @param int $post_id
+	 * @param string $url
 	 * @return boolean|multitype:string unknown |multitype:string Ambigous <string, number>
 	 */
 	public static function down_remote_file($post_id, $url) {
@@ -293,6 +296,8 @@ class hacklog_ria_util {
 				return self::return_origin ( $remote_image_url );
 			}
 			$filename = sanitize_file_name ( basename ( $remote_image_url ) );
+			$orig_ext = pathinfo($filename, PATHINFO_EXTENSION);
+			$filename = $orig_ext == $file_ext ? $filename : $filename. '.'. $file_ext;
 			$type = $mime;
 			// download remote file and save it into database;
 			$result = self::handle_upload ( $filename, $file_content, $type, $post_id );
@@ -351,6 +356,9 @@ class hacklog_ria_util {
 		
 		$unique_filename_callback = null;
 		$filename = wp_unique_filename ( $uploads ['path'], $filename, $unique_filename_callback );
+		//fix 远程服务器图片有空格到本地 LAMP 服务器显示不出来的问题
+		$filename = urldecode($filename);
+		$filename = str_replace(array('%20',' ', '_'), '-', $filename);
 		
 		// Move the file to the uploads dir
 		$new_file = $uploads ['path'] . "/$filename";
@@ -367,10 +375,11 @@ class hacklog_ria_util {
 		$url = $uploads ['url'] . "/$filename";
 		
 		// Compatible with Hacklog Remote Attachment plugin
-		if (class_exists ( 'hacklogra' )) 
+		if (class_exists ( 'hacklogra' ) || class_exists('hacklogra_upyun'))
 		{
+			$the_class = class_exists ( 'hacklogra' ) ? 'hacklogra' : 'hacklogra_upyun';
 			//apply_filters( 'wp_handle_upload', array( 'file' => $new_file, 'url' => $url, 'type' => $type ), 'upload' );
-			$hacklogra_file = hacklogra::upload_and_send( array('file'=>$new_file,'url'=>$url) );
+			$hacklogra_file = $the_class::upload_and_send( array('file'=>$new_file,'url'=>$url) );
 			$url = $hacklogra_file['url'];
 			$new_file = $hacklogra_file['file'];
 		}

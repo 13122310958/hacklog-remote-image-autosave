@@ -1,7 +1,20 @@
 <?php
+/**
+ * @package Hacklog Remote Image Autosave
+ * @encoding UTF-8
+ * @author 荒野无灯 <HuangYeWuDeng>
+ * @link http://ihacklog.com
+ * @copyright Copyright (C) 2012 荒野无灯
+ * @license http://www.gnu.org/licenses/
+ */
+
 /** Load WordPress Administration Bootstrap */
 define( 'IFRAME_REQUEST' , true );
-$bootstrap_file = dirname(dirname(dirname(dirname(__FILE__)))). '/wp-admin/admin.php';
+
+/** fix Notice: Undefined offset: 1 in /PATH-TO-WP-ROOT-DIR/wp-includes/vars.php on line 31 */
+$_SERVER['PHP_SELF'] = '/wp-admin/handle.php';
+
+$bootstrap_file = dirname(dirname(dirname(__DIR__))). '/wp-admin/admin.php';
 
 if (file_exists( $bootstrap_file ))
 {

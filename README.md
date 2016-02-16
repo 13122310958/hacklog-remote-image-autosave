@@ -3,14 +3,13 @@
 **Donate link:** http://ihacklog.com/donate
 **Tags:** images, auto,autosave,remote
 **Requires at least:** 3.2.1
-**Tested up to:** 3.5
-**Stable tag:** 2.0.8
+**Tested up to:** 4.4.2
+**Stable tag:** 2.0.9
 
 save remote images in the posts to local server and add it as an attachment to the post.
 
 
 ## Description ##
-升级注意：2.0.8 版是对WP 3.5的更新，如果你使用的WP版本低于 3.5，请不要更新。
 
 This plugin can save remote images in the posts to local server automatically and 
 add it as an attachment to the post.
@@ -22,6 +21,26 @@ add it as an attachment to the post.
 
 * 与Hacklog Remote Attachment 插件兼容性良好　
 * 与Watermark Reloaded 插件兼容性良好　
+
+@TODO
+自定义img标签图片提取正则（情景描述：有些网页的 img 的图片地址不是用src属性标注的，比如微信网页版用 data-src 来标注图片地址。）
+感谢 @守心斋 提出建议。
+
+@待测试
+1.随机数参数url形如http://xxxx.jpg?123。导致插件不能正常下载图片 (@walkskyer)
+2.前台HTTP，HTTPS后台出现问题。无法正常显示插件页面。 (@Jakes)
+
+@待定功能
+1.自定义img标签图片提取正则 (@守心斋)
+2.兼容SAE版WORDPRESS （@苏洋 ）
+3.自定义路径 （@mapleaf）
+
+
+* 2.0.9
+*  修复：远程图片url没有文件名后缀时，自动添加后缀。这样在WP文章里单独点击图片文件链接时，可避免某些服务器把没有后缀的图片文件当二进制文件下载的问题。
+*  修复:Error:SyntaxError: Unexpected token {. Check your HTTP Server error log or PHP error log to see what happend. (thanks to @守心斋)
+*  修复: 远程服务器图片有空格到本地 LAMP 服务器显示不出来的问题 (thanks to @再袭面包屋)
+*  修复: Notice: Undefined offset: 1 in /PATH-TO-WP-ROOT-DIR/wp-includes/vars.php on line 31 (thanks to @YYK)
 
 * 2.0.0 版完全重写。相比于原来1.0.2版的插件，有非常大的改进。
 * 原来的插件是在文章更新时自动下载远程图片，如果图片非常多的话，这样容易导致执行超时或只有部分图片被下载了。
@@ -47,6 +66,12 @@ screenshot-4.png
 
 
 ## Changelog ##
+
+### 2.0.9 ###
+* fixed: auto append filename extension when remote img url has no extension (like .png or .jpg)
+* fixed: Error:SyntaxError: Unexpected token {. Check your HTTP Server error log or PHP error log to see what happend. (thanks to @守心斋)
+* fixed: filename has %20 chars (thanks to 再袭面包屋)
+* fixed: Notice: Undefined offset: 1 in /PATH-TO-WP-ROOT-DIR/wp-includes/vars.php on line 31 (thanks to @YYK)
 
 ### 2.0.8 ###
 * fixed: added support for WP 3.5 for the new TinyMCE.
