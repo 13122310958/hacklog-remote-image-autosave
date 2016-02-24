@@ -4,7 +4,7 @@ Donate link: http://ihacklog.com/donate
 Tags: images, auto,autosave,remote
 Requires at least: 3.2.1
 Tested up to: 4.4.2
-Stable tag: 2.0.9
+Stable tag: 2.1.0
 
 save remote images in the posts to local server and add it as an attachment to the post.
 
@@ -35,6 +35,9 @@ add it as an attachment to the post.
 2.兼容SAE版WORDPRESS （@苏洋 ）
 3.自定义路径 （@mapleaf）
 
+* 2.1.0
+  修复：下载类似于http://mmbiz.qpic.cn/mmbiz/xxxxxx/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1
+  这种url的图片的时候，当文章中有多个图片，底部（后下载的）的图片会将前面的图片覆盖的bug.
 
 * 2.0.9
 *  修复：远程图片url没有文件名后缀时，自动添加后缀。这样在WP文章里单独点击图片文件链接时，可避免某些服务器把没有后缀的图片文件当二进制文件下载的问题。
@@ -62,6 +65,9 @@ add it as an attachment to the post.
 
 
 == Changelog ==
+
+= 2.1.0 =
+* fixed: now the plugin can handle urls like http://mmbiz.qpic.cn/mmbiz/xxxxxx/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1 properly.
 
 = 2.0.9 =
 * fixed: auto append filename extension when remote img url has no extension (like .png or .jpg)

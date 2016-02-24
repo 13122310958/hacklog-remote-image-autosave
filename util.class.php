@@ -225,6 +225,24 @@ class hacklog_ria_util {
 			die();
 		}
 	}
+
+	/**
+	 * @param $remote_image_url
+	 * @param $mime_file_ext
+	 * @return mixed|string
+	 */
+	public static function get_filename_from_url($remote_image_url, $mime_file_ext)
+	{
+		$url_path = parse_url($remote_image_url, PHP_URL_PATH);
+		$maybe_filename = pathinfo($url_path, PATHINFO_FILENAME);
+		$filename = is_numeric($maybe_filename) ? basename(dirname($url_path)) : $maybe_filename;
+		$filename = sanitize_file_name($filename);
+		$orig_ext = pathinfo($filename, PATHINFO_EXTENSION);
+		$filename = $orig_ext === $mime_file_ext ? $filename : $filename. '.'. $mime_file_ext;
+		$filename = substr($filename, -32);
+		$filename = time() .'-'. random_int(1000, 9999) .'-'. $filename;
+		return $filename;
+	}
 	
 	/**
 	 * NOTE: wp curl class default timeout is 5s,must set it long to avoid the
@@ -284,7 +302,7 @@ class hacklog_ria_util {
 				return FALSE;
 			}
 			
-			if (200 == $http ['response'] ['code']) {
+			if (200 === $http ['response'] ['code']) {
 				$file_content = $http ['body'];
 			} else {
 				// time out or 302 redirect (remote site anti-leech)
@@ -295,9 +313,7 @@ class hacklog_ria_util {
 			if ( !self::check_image_size ( $file_content )) {
 				return self::return_origin ( $remote_image_url );
 			}
-			$filename = sanitize_file_name ( basename ( $remote_image_url ) );
-			$orig_ext = pathinfo($filename, PATHINFO_EXTENSION);
-			$filename = $orig_ext == $file_ext ? $filename : $filename. '.'. $file_ext;
+			$filename = self::get_filename_from_url($remote_image_url, $file_ext);
 			$type = $mime;
 			// download remote file and save it into database;
 			$result = self::handle_upload ( $filename, $file_content, $type, $post_id );
