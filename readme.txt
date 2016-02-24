@@ -58,10 +58,10 @@ add it as an attachment to the post.
 == Frequently Asked Questions ==
 
 == Screenshots ==
-1. screenshot-1.png
-2. screenshot-2.png
-3. screenshot-3.png
-4. screenshot-4.png
+screenshot-1.png
+screenshot-2.png
+screenshot-3.png
+screenshot-4.png
 
 
 == Changelog ==
